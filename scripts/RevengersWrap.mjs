@@ -19,11 +19,13 @@ const REVENGE_EFFECT_DATA = {
 };
 const REVENGE_ORIGIN = 'macro.aid-attack';
 
+//returns actors that have a Revenger's Wrap in their inventory
 export function getWrapActors(game) {
   const wrapActors = game.actors.contents.filter(a => a.items.find(i => i.name === ITEM_NAME));
   return wrapActors;
 };
 
+// removes the revenge mark from all actors and returns the list of actors that were unmarked
 export async function clearRevengeMarks(combatActors) {
     const marked = combatActors.filter(a =>
       a.effects.some(e => e.name === REVENGE_EFFECT_DATA.name)
@@ -35,6 +37,7 @@ export async function clearRevengeMarks(combatActors) {
     return marked;
 };
 
+// clears revenge marks at the end of the turn of any combatant whose actor is in wrapActors
 export async function clearRevengeOnTurnEnd(combat, prior, wrapActors, combatActors) {
 
   const endedCombatant = combat.combatants.get(prior.combatantId);
@@ -52,12 +55,12 @@ export async function clearRevengeOnTurnEnd(combat, prior, wrapActors, combatAct
   });
 };
 
+// prompts the director to select a token to mark for revenge when an actor wearing the Revenger's Wrap takes damage, and applies the mark as an active effect
 export async function applyMarkWhenWearerDamaged(actor, changes, options, wrapActors, combatActors) {
 
   if(!changes.system.stamina.value) return;
   if (!wrapActors.includes(actor)) return;
   
-  // this line only necessary if also using @adygenie's bloodbound band damage macro
   if (options.bloodboundDamage) return;
 
   const newStamina  = changes.system?.stamina?.value;
@@ -119,6 +122,7 @@ export async function applyMarkWhenWearerDamaged(actor, changes, options, wrapAc
   });
 };
 
+// applies the bonus effect of the Revenger's Wrap when an actor wearing it makes a strike targeting a marked token
 export async function applyRevengeStrikeEffects(message, game, wrapActors, combatActors) {
   if (!message.rolls?.length) return;
   if (message.rolls[0].options?.type !== 'test') return;
@@ -146,7 +150,6 @@ export async function applyRevengeStrikeEffects(message, game, wrapActors, comba
 
   if (!markedIsTargeted) return;
 
-
   const maxChar = Math.max(...Object.values(attackingActor.system.characteristics).map(c => c.value));
   await ChatMessage.create({
     content: `<strong>Revenger's Wrap Bonus Effect:</strong> <br/> [[/apply Bleeding turn]]`,
@@ -155,6 +158,5 @@ export async function applyRevengeStrikeEffects(message, game, wrapActors, comba
   const roll = new ds.rolls.DamageRoll('' +maxChar);
   await roll.toMessage({
     flavor: `Revenger's Wrap Bonus Damage:`,
-
   });
 }
