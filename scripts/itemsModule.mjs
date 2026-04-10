@@ -1,13 +1,10 @@
-import {getWrapActors, applyMarkWhenWearerDamaged, clearRevengeOnTurnEnd, applyRevengeStrikeEffects} from "./RevengersWrap.mjs";
+import {getWrapActors, applyMarkWhenWearerDamaged, clearRevengeMarks, clearRevengeOnTurnEnd, applyRevengeStrikeEffects} from "./RevengersWrap.mjs";
 
 const MODULE_ID = 'draw-steel-rewards-automation'
 const REVENGERS_WRAP_NAME = 'Revenger’s Wrap';
 
-console.log("Hello World! This code runs immediately when the file is loaded.");
-
 Hooks.on("init", function() {
   console.log("This code runs once the Foundry VTT software begins its initialization workflow.");
-  
 });
 
 
@@ -17,7 +14,6 @@ Hooks.on("init", function() {
 /* -------------------------------------------------- */
 
 Hooks.once("init", () => {
-
   game.settings.register(MODULE_ID, "revengersWrap", {
     name: `${MODULE_ID}.Settings.RevengersWrap.Name`,
     hint: `${MODULE_ID}.Settings.RevengersWrap.Hint`,
@@ -25,7 +21,7 @@ Hooks.once("init", () => {
     config: true,
     type: Boolean,
     default: true,
-    onChange: () => {if (window._revengeHook || window._eotHook || window._revengeRollHook) {Hooks.off('updateActor', window._revengeHook); Hooks.off('combatTurnChange', window._eotHook); Hooks.off('createChatMessage', window._revengeRollHook);}},
+    onChange: (value) => {toggleRevengersWrap(value)}
   });
 
   game.settings.register(MODULE_ID, "bloodboundBand", {
@@ -37,21 +33,26 @@ Hooks.once("init", () => {
     default: true,
   });
 
-  console.log(game.settings.get(MODULE_ID, "revengersWrap"));
-
 });
 Hooks.on("ready", () => {
-  console.log("<strong>Ready Hook:</strong> This code runs once the Foundry VTT software is ready and all game data has been loaded.");
+  console.log("Ready Hook: This code runs once the Foundry VTT software is ready and all game data has been loaded.");
 
-  const wrapActors = getWrapActors(game);
-  const combatActors = game.combat?.combatants.filter(c => c.actor).map(c => c.actor) ?? [];
-  /* -------------------------------------------------- */
-  /*   Revenger's Wrap Hooks                            */
-  /* -------------------------------------------------- */
-  /* -------------------------apply a mark to the actor that is selected when Revenger's Wrap wearer takes damage------------------------- */
+  // If the setting is enabled, activate the Revenger's Wrap functionality
   if (game.settings.get(MODULE_ID, "revengersWrap")) {
-    console.log('revengers wrap setting is enabled');
+    toggleRevengersWrap(true);
+  }
+  
+});
 
+  /* -------------------------------------------------- */
+  /*   Revenger's Wrap Hook Controls                    */
+  /* -------------------------------------------------- */
+const toggleRevengersWrap = (enabled) => {
+  if (enabled) {
+    const wrapActors = getWrapActors(game);
+    const combatActors = game.combat?.combatants.filter(c => c.actor).map(c => c.actor) ?? [];
+
+    /* -------------------------apply a mark to the actor that is selected when Revenger's Wrap wearer takes damage------------------------- */
     window._revengeHook = Hooks.on('updateActor', async (actor, changes, options) => {
       applyMarkWhenWearerDamaged(actor, changes, options, wrapActors, combatActors);
     });
@@ -65,6 +66,13 @@ Hooks.on("ready", () => {
     window._revengeRollHook = Hooks.on('createChatMessage', async (message) => {
       applyRevengeStrikeEffects(message, game, wrapActors, combatActors);
     });
-  }
-  
-});
+  } else {
+    Hooks.off('updateActor', window._revengeHook);
+    Hooks.off('combatTurnChange', window._eotHook);
+    Hooks.off('createChatMessage', window._revengeRollHook);
+    window._revengeHook = null;
+    window._eotHook = null;
+    window._revengeRollHook = null;
+    clearRevengeMarks(game.combat?.combatants.filter(c => c.actor).map(c => c.actor) ?? []);
+  };
+}

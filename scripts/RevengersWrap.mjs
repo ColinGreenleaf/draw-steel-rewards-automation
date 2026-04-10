@@ -17,19 +17,10 @@ const REVENGE_EFFECT_DATA = {
   },
   description: "", tint: "#ffffff", transfer: false, statuses: [], sort: 0, flags: {}
 };
-
 const REVENGE_ORIGIN = 'macro.aid-attack';
 
-
-export function Toggle(settingState) {
-    console.log('revengers wrap setting has been updated');
-  };
-
 export function getWrapActors(game) {
-  console.log(game)
-  console.log('Retrieving actors wearing Revenger’s Wrap...');
   const wrapActors = game.actors.contents.filter(a => a.items.find(i => i.name === ITEM_NAME));
-  console.log('Found wrap actors:', wrapActors);
   return wrapActors;
 };
 
@@ -152,12 +143,11 @@ export async function applyRevengeStrikeEffects(message, game, wrapActors, comba
   const markedIsTargeted = allTargets.some(t =>
     t.actor?.id === markedActor.id || t.id === markedActor.token?.id
   );
+
   if (!markedIsTargeted) return;
 
-  console.log('Attacking actor:', attackingActor);
 
   const maxChar = Math.max(...Object.values(attackingActor.system.characteristics).map(c => c.value));
-  console.log('Applying Revenger’s Wrap bonus damage. Attacking actor:', attackingActor.name, 'Marked target:', markedActor.name, 'Max characteristic value:', maxChar);
   await ChatMessage.create({
     content: `<strong>Revenger's Wrap Bonus Effect:</strong> <br/> [[/apply Bleeding turn]]`,
   });
