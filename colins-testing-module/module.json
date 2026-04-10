@@ -1,0 +1,24 @@
+{
+  "id": "colins-testing-module",
+  "title": "Colin's Testing Module",
+  "version": "1.0.0",
+  "compatibility": {
+    "minimum": "13",
+    "verified": "13"
+  },
+  "flags": {
+    "canUpload": true
+  },
+  "description": "",
+  "esmodules": [
+    "scripts/itemsModule.mjs"
+  ],
+  "languages": [
+    {
+      "lang": "en",
+      "name": "English",
+      "path": "lang/en.json",
+      "flags": {}
+    }
+  ]
+}
