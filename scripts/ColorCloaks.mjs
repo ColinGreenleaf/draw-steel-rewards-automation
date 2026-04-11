@@ -1,7 +1,13 @@
 const MODULE_ID = "draw-steel-combat-tracker";
 const BLUECLOAK_NAME = 'Color Cloak (Blue)';
+const BLUECLOAK_EFFECT_POSITIVE_NAME = 'Cold Immunity';
+const BLUECLOAK_EFFECT_NEGATIVE_NAME = 'Cold Weakness';
 const REDCLOAK_NAME = 'Color Cloak (Red)';
+const REDCLOAK_EFFECT_POSITIVE_NAME = 'Fire Immunity';
+const REDCLOAK_EFFECT_NEGATIVE_NAME = 'Fire Weakness';
 const YELLOWCLOAK_NAME = 'Color Cloak (Yellow)';
+const YELLOWCLOAK_EFFECT_POSITIVE_NAME = 'Lightning Immunity';
+const YELLOWCLOAK_EFFECT_NEGATIVE_NAME = 'Lightning Weakness';
 
 export async function checkColorCloakEffects(message, game, blueCloakActors, redCloakActors, yellowCloakActors) {
   // if (!message.rolls?.length) return;
@@ -39,9 +45,14 @@ export async function checkColorCloakEffects(message, game, blueCloakActors, red
     );
     if (hasColdDamage) {
       await ChatMessage.create({
-        content: `<strong>${BLUECLOAK_NAME}:</strong> ${blueCloakActors[0].name} was targeted by an effect dealing cold damage, and may shift ${Math.ceil(blueCloakActors[0].system.hero.xp / 16)} square(s) as a <i>triggered action</i>.`,
+        content: `<strong>${BLUECLOAK_NAME}:</strong> ${blueCloakActors[0].name} was targeted by an effect dealing cold damage, and may shift ${Math.ceil(blueCloakActors[0].system.hero.xp / 16)} square(s) as a <i>triggered action</i>. If they do, their ${ BLUECLOAK_EFFECT_POSITIVE_NAME } will become ${ BLUECLOAK_EFFECT_NEGATIVE_NAME } until the end of the next round. This triggered action cannot be used again until this weakness ends.`,
       });
     }
+
+    console.log(targetedBlueCloakWearers[0]);
+    const immunityEffect = targetedBlueCloakWearers[0].effects.find(e => e.name === BLUECLOAK_EFFECT_POSITIVE_NAME);
+    const weaknessEffect = targetedBlueCloakWearers[0].effects.find(e => e.name === BLUECLOAK_EFFECT_NEGATIVE_NAME);
+  if (!markedActor) return;
   }
   if (targetedRedCloakWearers.length > 0) {
     const hasFireDamage = itemData.system.power.effects.some(effect =>
@@ -50,7 +61,7 @@ export async function checkColorCloakEffects(message, game, blueCloakActors, red
     );
     if (hasFireDamage) {
       await ChatMessage.create({
-        content: `<strong>${REDCLOAK_NAME}:</strong> ${redCloakActors[0].name} was targeted by an effect dealing fire damage, and may reduce that damage to 0 as a <i>triggered action</i>.`,
+        content: `<strong>${REDCLOAK_NAME}:</strong> ${redCloakActors[0].name} was targeted by an effect dealing fire damage, and may reduce that damage to 0 as a <i>triggered action</i>. If they do, their ${ REDCLOAK_EFFECT_POSITIVE_NAME } will become ${ REDCLOAK_EFFECT_NEGATIVE_NAME } until the end of the next round. This triggered action cannot be used again until this weakness ends.`,
       });
     }
   }
@@ -61,24 +72,9 @@ export async function checkColorCloakEffects(message, game, blueCloakActors, red
     );
     if (hasLightningDamage) {
       await ChatMessage.create({
-        content: `<strong>${YELLOWCLOAK_NAME}:</strong> ${yellowCloakActors[0].name} was targeted by an effect dealing lightning damage, and may have their next damaging ability deal ${Math.ceil(yellowCloakActors[0].system.hero.xp / 16)} extra damage as a <i>triggered action</i>.`,
+        content: `<strong>${YELLOWCLOAK_NAME}:</strong> ${yellowCloakActors[0].name} was targeted by an effect dealing lightning damage, and may have their next damaging ability deal ${Math.ceil(yellowCloakActors[0].system.hero.xp / 16)} extra damage as a <i>triggered action</i>. Once that extra damage is dealt, their ${ YELLOWCLOAK_EFFECT_POSITIVE_NAME } will become ${ YELLOWCLOAK_EFFECT_NEGATIVE_NAME } until the end of the next round. This triggered action cannot be used again until this weakness ends.`,
       });
     }
   }
-
-  // //check for if the message ability has a reactive effect that would trigger a cloak
-  // if (itemData.system.power.effects)
-  // {    
-    
-  //   const hasFireDamage = itemData.system.power.effects.some(effect =>
-  //     effect.type === "damage" &&
-  //     Object.values(effect.damage).some(tier => tier.types?.has("fire"))
-  //   );
-  //   const hasLightningDamage = itemData.system.power.effects.some(effect =>
-  //     effect.type === "damage" &&
-  //     Object.values(effect.damage).some(tier => tier.types?.has("electric"))
-  //   );
-
-  // }
 
 }
