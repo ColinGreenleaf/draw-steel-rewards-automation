@@ -1,13 +1,18 @@
-import {getWrapActors, applyMarkWhenWearerDamaged, clearRevengeMarks, clearRevengeOnTurnEnd, applyRevengeStrikeEffects} from "./RevengersWrap.mjs";
+import {applyMarkWhenWearerDamaged, clearRevengeMarks, clearRevengeOnTurnEnd, applyRevengeStrikeEffects} from "./RevengersWrap.mjs";
+import {dealSharedDamage} from "./BloodboundBand.mjs";
 
 const MODULE_ID = 'draw-steel-rewards-automation'
 const REVENGERS_WRAP_NAME = 'Revenger’s Wrap';
+const BLOODBOUND_BAND_NAME = 'Bloodbound Band';
 
 Hooks.on("init", function() {
   console.log("This code runs once the Foundry VTT software begins its initialization workflow.");
 });
 
-
+export function getActorsWithItem(game, itemName) {
+  const actors = game.actors.contents.filter(a => a.items.find(i => i.name === itemName));
+  return actors;
+};
 
 /* -------------------------------------------------- */
 /*   Initialization                                   */
@@ -31,17 +36,22 @@ Hooks.once("init", () => {
     config: true,
     type: Boolean,
     default: true,
+    onChange: (value) => {toggleBloodboundBand(value)}
   });
 
 });
 Hooks.on("ready", () => {
   console.log("Ready Hook: This code runs once the Foundry VTT software is ready and all game data has been loaded.");
-
   // If the setting is enabled, activate the Revenger's Wrap functionality
   if (game.settings.get(MODULE_ID, "revengersWrap")) {
     toggleRevengersWrap(true);
   }
-  
+  // If the setting is enabled, activate the Bloodbound Band functionality
+  if (game.settings.get(MODULE_ID, "bloodboundBand")) {
+    // The Bloodbound Band functionality is handled within its own module, so we don't need to do anything here
+    toggleBloodboundBand(true);
+  }
+
 });
 
   /* -------------------------------------------------- */
@@ -49,7 +59,8 @@ Hooks.on("ready", () => {
   /* -------------------------------------------------- */
 const toggleRevengersWrap = (enabled) => {
   if (enabled) {
-    const wrapActors = getWrapActors(game);
+    //find relevant actors
+    const wrapActors = getActorsWithItem(game, REVENGERS_WRAP_NAME);
     const combatActors = game.combat?.combatants.filter(c => c.actor).map(c => c.actor) ?? [];
 
     /* -------------------------apply a mark to the actor that is selected when Revenger's Wrap wearer takes damage------------------------- */
@@ -75,4 +86,22 @@ const toggleRevengersWrap = (enabled) => {
     window._revengeRollHook = null;
     clearRevengeMarks(game.combat?.combatants.filter(c => c.actor).map(c => c.actor) ?? []);
   };
+}
+
+  /* -------------------------------------------------- */
+  /*   Bloodbound Band Hook Controls                    */
+  /* -------------------------------------------------- */
+const toggleBloodboundBand = (enabled) => {
+  if (enabled) {
+    //find relevant actors
+    const bandActors = getActorsWithItem(game, BLOODBOUND_BAND_NAME);
+
+    /* -------------------------apply shared damage when an actor with the band takes damage------------------------- */
+    window._bloodboundHook = Hooks.on('updateActor', async (actor, changes, options) => {
+      dealSharedDamage(bandActors, actor, changes, options);
+    });
+  } else {
+    Hooks.off('updateActor', window._bloodboundHook);
+    window._bloodboundHook = null;
+  } 
 }
