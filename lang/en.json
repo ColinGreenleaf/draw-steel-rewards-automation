@@ -28,7 +28,7 @@
       },
       "ColorCloaks": {
         "Name": "Color Cloaks",
-        "Hint": "Enable the Color Cloaks' special triggers. (Red = reduce fire damage to 0, Blue = shift equal to level, Yellow = bonus damage equal to level on next attack)"
+        "Hint": "Enable the Color Cloaks' special trigger reminders. (Red = reduce fire damage to 0, Blue = shift equal to level, Yellow = bonus damage equal to level on next attack)"
       },
       "ImageSource": {
         "Token": "Token Image",
