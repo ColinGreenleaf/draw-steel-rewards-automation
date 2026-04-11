@@ -19,8 +19,8 @@
     "MinionPickCancelled": "Minion selection cancelled.",
     "Settings": {
       "RevengersWrap": {
-        "Name": "Revenger's Wrap Automation",
-        "Hint": "If a player has a Revenger's Wrap in their inventory, enable \"Marked for Revenge\" tracking and bonus effects."
+        "Name": "Revenger's Wrap",
+        "Hint": "Enable \"Marked for Revenge\" tracking and bonus effects for the wearer of a Revenger's Wrap."
       },
       "BloodboundBand": {
         "Name": "Bloodbound Band Damage Automation",
