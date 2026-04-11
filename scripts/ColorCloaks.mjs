@@ -45,7 +45,7 @@ export async function checkColorCloakEffects(message, game, blueCloakActors, red
     );
     if (hasColdDamage) {
       await ChatMessage.create({
-        content: `<strong>${BLUECLOAK_NAME}:</strong> ${blueCloakActors[0].name} was targeted by an effect dealing cold damage, and may shift ${Math.ceil(blueCloakActors[0].system.hero.xp / 16)} square(s) as a <i>triggered action</i>. If they do, their ${ BLUECLOAK_EFFECT_POSITIVE_NAME } will become ${ BLUECLOAK_EFFECT_NEGATIVE_NAME } until the end of the next round. This triggered action cannot be used again until this weakness ends.`,
+        content: `<strong>${BLUECLOAK_NAME}:</strong> ${blueCloakActors[0].name} was targeted by an effect dealing cold damage, and may shift ${Math.ceil(blueCloakActors[0].system.hero.xp / 16)} square(s) as a <i>triggered action</i>. If they do, their ${ BLUECLOAK_EFFECT_POSITIVE_NAME } becomes ${ BLUECLOAK_EFFECT_NEGATIVE_NAME } with the same value until the end of the next round. This triggered action cannot be used again until this weakness ends.`,
       });
     }
 
@@ -61,7 +61,7 @@ export async function checkColorCloakEffects(message, game, blueCloakActors, red
     );
     if (hasFireDamage) {
       await ChatMessage.create({
-        content: `<strong>${REDCLOAK_NAME}:</strong> ${redCloakActors[0].name} was targeted by an effect dealing fire damage, and may reduce that damage to 0 as a <i>triggered action</i>. If they do, their ${ REDCLOAK_EFFECT_POSITIVE_NAME } will become ${ REDCLOAK_EFFECT_NEGATIVE_NAME } until the end of the next round. This triggered action cannot be used again until this weakness ends.`,
+        content: `<strong>${REDCLOAK_NAME}:</strong> ${redCloakActors[0].name} was targeted by an effect dealing fire damage, and may reduce that damage to 0 as a <i>triggered action</i>. If they do, their ${ REDCLOAK_EFFECT_POSITIVE_NAME } becomes ${ REDCLOAK_EFFECT_NEGATIVE_NAME } with the same value until the end of the next round. This triggered action cannot be used again until this weakness ends.`,
       });
     }
   }
@@ -72,7 +72,7 @@ export async function checkColorCloakEffects(message, game, blueCloakActors, red
     );
     if (hasLightningDamage) {
       await ChatMessage.create({
-        content: `<strong>${YELLOWCLOAK_NAME}:</strong> ${yellowCloakActors[0].name} was targeted by an effect dealing lightning damage, and may have their next damaging ability deal ${Math.ceil(yellowCloakActors[0].system.hero.xp / 16)} extra damage as a <i>triggered action</i>. Once that extra damage is dealt, their ${ YELLOWCLOAK_EFFECT_POSITIVE_NAME } will become ${ YELLOWCLOAK_EFFECT_NEGATIVE_NAME } until the end of the next round. This triggered action cannot be used again until this weakness ends.`,
+        content: `<strong>${YELLOWCLOAK_NAME}:</strong> ${yellowCloakActors[0].name} was targeted by an effect dealing lightning damage, and may have their next damaging ability deal ${Math.ceil(yellowCloakActors[0].system.hero.xp / 16)} extra damage as a <i>triggered action</i>. Once that extra damage is dealt, their ${ YELLOWCLOAK_EFFECT_POSITIVE_NAME } becomes ${ YELLOWCLOAK_EFFECT_NEGATIVE_NAME } with the same value until the end of the next round. This triggered action cannot be used again until this weakness ends.`,
       });
     }
   }
