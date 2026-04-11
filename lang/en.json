@@ -26,9 +26,9 @@
         "Name": "Bloodbound Band Damage Automation",
         "Hint": "Enable unpreventable damage shared between two or more wearers of a Bloodbound Band."
       },
-      "MonsterImageSource": {
-        "Name": "Monster Image Source",
-        "Hint": "Choose whether monster portraits use the token image or the actor portrait image."
+      "ColorCloaks": {
+        "Name": "Color Cloaks",
+        "Hint": "Enable the Color Cloaks' special triggers. (Red = reduce fire damage, Blue = shift, Yellow = bonus damage)"
       },
       "ImageSource": {
         "Token": "Token Image",

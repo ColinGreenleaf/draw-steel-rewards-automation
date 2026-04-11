@@ -1,5 +1,4 @@
 const MODULE_ID = "draw-steel-combat-tracker";
-
 const ITEM_NAME = 'Revenger’s Wrap';
 
 const REVENGE_EFFECT_DATA = {

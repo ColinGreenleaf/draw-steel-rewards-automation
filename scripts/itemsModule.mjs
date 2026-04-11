@@ -1,5 +1,6 @@
 import {applyMarkWhenWearerDamaged, clearRevengeMarks, clearRevengeOnTurnEnd, applyRevengeStrikeEffects} from "./RevengersWrap.mjs";
 import {dealSharedDamage} from "./BloodboundBand.mjs";
+import {checkColorCloakEffects} from "./ColorCloaks.mjs";
 
 const MODULE_ID = 'draw-steel-rewards-automation'
 const REVENGERS_WRAP_NAME = 'Revenger’s Wrap';
@@ -39,6 +40,15 @@ Hooks.once("init", () => {
     onChange: (value) => {toggleBloodboundBand(value)}
   });
 
+  game.settings.register(MODULE_ID, "colorCloaks", {
+    name: `${MODULE_ID}.Settings.ColorCloaks.Name`,
+    hint: `${MODULE_ID}.Settings.ColorCloaks.Hint`,
+    scope: "world",
+    config: true,
+    type: Boolean,
+    default: true,
+    onChange: (value) => {toggleColorCloaks(value)}
+  });
 });
 Hooks.on("ready", () => {
   console.log("Ready Hook: This code runs once the Foundry VTT software is ready and all game data has been loaded.");
@@ -50,6 +60,10 @@ Hooks.on("ready", () => {
   if (game.settings.get(MODULE_ID, "bloodboundBand")) {
     // The Bloodbound Band functionality is handled within its own module, so we don't need to do anything here
     toggleBloodboundBand(true);
+  }
+  // If the setting is enabled, activate the Color Cloaks functionality
+  if (game.settings.get(MODULE_ID, "colorCloaks")) {
+    toggleColorCloaks(true);
   }
 
 });
@@ -104,4 +118,24 @@ const toggleBloodboundBand = (enabled) => {
     Hooks.off('updateActor', window._bloodboundHook);
     window._bloodboundHook = null;
   } 
+}
+
+  /* -------------------------------------------------- */
+  /*   Color Cloaks Hook Controls                       */
+  /* -------------------------------------------------- */
+const toggleColorCloaks = (enabled) => {
+  if (enabled) {
+    //find relevant actors
+    const blueCloakActors = getActorsWithItem(game, "Color Cloak (Blue)");
+    const redCloakActors = getActorsWithItem(game, "Color Cloak (Red)");
+    const yellowCloakActors = getActorsWithItem(game, "Color Cloak (Yellow)");
+
+    /* -------------------------apply color cloak effects when an effect occurs on a target wearing a cloak------------------------- */
+    window._colorCloakHook = Hooks.on('createChatMessage', async (message) => {
+      checkColorCloakEffects(message, game, blueCloakActors, redCloakActors, yellowCloakActors);
+    })
+  } else {
+    Hooks.off('createChatMessage', window._colorCloakHook);
+    window._colorCloakHook = null;
+  }
 }
