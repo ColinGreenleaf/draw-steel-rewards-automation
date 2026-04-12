@@ -1,7 +1,11 @@
 import {applyMarkWhenWearerDamaged, clearRevengeMarks, clearRevengeOnTurnEnd, applyRevengeStrikeEffects} from "./RevengersWrap.mjs";
 import {dealSharedDamage} from "./BloodboundBand.mjs";
 import {remindColorCloakEffects} from "./ColorCloaks.mjs";
-import {remindHelmEffects} from "./HellchargerHelm.mjs";
+import {remindAndApplyHelmEffects} from "./HellchargerHelm.mjs";
+
+
+//TODO: add additinal checks so that each hook doesn't run it's code unless the conditions are met.
+//this could potentially be collapsing all alike hooks together and adding check functions for each item to see if the item is involved in the tirggering event
 
 const MODULE_ID = 'draw-steel-rewards-automation'
 const REVENGERS_WRAP_NAME = 'Revenger’s Wrap';
@@ -166,7 +170,7 @@ const toggleHellchargerHelm = (enabled) => {
 
 
     window._helmHook = Hooks.on('createChatMessage', async (message) => {
-      remindHelmEffects(message, game, helmActors);
+      remindAndApplyHelmEffects(message, game, helmActors);
     })
   } else {
     Hooks.off('createChatMessage', window._helmHook);
