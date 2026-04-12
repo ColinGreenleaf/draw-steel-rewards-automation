@@ -2,6 +2,7 @@ import {applyMarkWhenWearerDamaged, clearRevengeMarks, clearRevengeOnTurnEnd, ap
 import {dealSharedDamage} from "./Trinkets/Echelon 1/BloodboundBand.mjs";
 import {remindColorCloakEffects} from "./Trinkets/Echelon 1/ColorCloaks.mjs";
 import {remindAndApplyHelmEffects} from "./Trinkets/Echelon 1/HellchargerHelm.mjs";
+import {remindWhenWearerDamaged} from "./Leveled Treasures/Armor/KuranzoiPrismscale.mjs";
 
 
 //TODO: add additinal checks so that each hook doesn't run it's code unless the conditions are met.
@@ -12,6 +13,7 @@ const REVENGERS_WRAP_NAME = 'Revenger’s Wrap';
 const BLOODBOUND_BAND_NAME = 'Bloodbound Band';
 const COLOR_CLOAKS_NAMES = ['Color Cloak (Blue)', 'Color Cloak (Red)', 'Color Cloak (Yellow)'];
 const HELLCHARGER_HELM_NAME = 'Hellcharger Helm';
+const KURANZOI_PRISMSCALE_NAME = "Kuran’zoi Prismscale";
 
 Hooks.on("init", function() {
   console.log("This code runs once the Foundry VTT software begins its initialization workflow.");
@@ -65,6 +67,15 @@ Hooks.once("init", () => {
     default: true,
     onChange: (value) => {toggleHellchargerHelm(value)}
   });
+  game.settings.register(MODULE_ID, "kuranzoiPrismscale", {
+    name: `${MODULE_ID}.Settings.KuranzoiPrismscale.Name`,
+    hint: `${MODULE_ID}.Settings.KuranzoiPrismscale.Hint`,
+    scope: "world",
+    config: true,
+    type: Boolean,
+    default: true,
+    onChange: (value) => {toggleKuranzoiPrismscale(value)}
+  });
 });
 Hooks.on("ready", () => {
   //once the game is ready, check which settings are enabled and activate the corresponding functionality for each item
@@ -72,6 +83,7 @@ Hooks.on("ready", () => {
   if (game.settings.get(MODULE_ID, "bloodboundBand"))   toggleBloodboundBand(true);
   if (game.settings.get(MODULE_ID, "colorCloaks"))      toggleColorCloaks(true);
   if (game.settings.get(MODULE_ID, "hellchargerHelm"))  toggleHellchargerHelm(true);
+  if (game.settings.get(MODULE_ID, "kuranzoiPrismscale")) toggleKuranzoiPrismscale(true);
 
 });
 
@@ -163,5 +175,21 @@ const toggleHellchargerHelm = (enabled) => {
     Hooks.off('createChatMessage', window._helmHook);
     window._helmHook = null;
   }
+}
+
+  /* -------------------------------------------------- */
+  /*   Kuran'zoi Prismscale Hook Controls                   */
+  /* -------------------------------------------------- */
+const toggleKuranzoiPrismscale = (enabled) => {
+  if (enabled) {
+    //find relevant actors
+    const scaleActors = getActorsWithItem(game, "Kuran’zoi Prismscale");
+    window._scaleHook = Hooks.on('updateActor', async (actor, changes, options) => {
+      remindWhenWearerDamaged(actor, changes, options, scaleActors);
+    })
+  } else {
+    Hooks.off('updateActor', window._scaleHook);
+    window._scaleHook = null;
+  } 
 }
 
