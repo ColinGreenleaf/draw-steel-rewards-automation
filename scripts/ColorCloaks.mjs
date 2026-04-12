@@ -1,4 +1,4 @@
-const MODULE_ID = "draw-steel-combat-tracker";
+const MODULE_ID = "draw-steel-rewards-automation";
 const BLUECLOAK_NAME = 'Color Cloak (Blue)';
 const BLUECLOAK_EFFECT_POSITIVE_NAME = 'Cold Immunity';
 const BLUECLOAK_EFFECT_NEGATIVE_NAME = 'Cold Weakness';
@@ -45,14 +45,16 @@ export async function checkColorCloakEffects(message, game, blueCloakActors, red
     );
     if (hasColdDamage) {
       await ChatMessage.create({
+        //TODO: find actual way to access the level of the character, rather than using XP as a proxy
         content: `<strong>${BLUECLOAK_NAME}:</strong> ${blueCloakActors[0].name} was targeted by an effect dealing cold damage, and may shift ${Math.ceil(blueCloakActors[0].system.hero.xp / 16)} square(s) as a <i>triggered action</i>. If they do, their ${ BLUECLOAK_EFFECT_POSITIVE_NAME } becomes ${ BLUECLOAK_EFFECT_NEGATIVE_NAME } with the same value until the end of the next round. This triggered action cannot be used again until this weakness ends.`,
       });
     }
 
-    console.log(targetedBlueCloakWearers[0]);
-    const immunityEffect = targetedBlueCloakWearers[0].effects.find(e => e.name === BLUECLOAK_EFFECT_POSITIVE_NAME);
-    const weaknessEffect = targetedBlueCloakWearers[0].effects.find(e => e.name === BLUECLOAK_EFFECT_NEGATIVE_NAME);
-  if (!markedActor) return;
+    //TODO: find out how to toggle the passive effects granted by the item in Foundry
+    // const immunityEffect = targetedBlueCloakWearers[0].effects.find(e => e.name === BLUECLOAK_EFFECT_POSITIVE_NAME);
+    // const weaknessEffect = targetedBlueCloakWearers[0].effects.find(e => e.name === BLUECLOAK_EFFECT_NEGATIVE_NAME);
+
+
   }
   if (targetedRedCloakWearers.length > 0) {
     const hasFireDamage = itemData.system.power.effects.some(effect =>
@@ -72,6 +74,8 @@ export async function checkColorCloakEffects(message, game, blueCloakActors, red
     );
     if (hasLightningDamage) {
       await ChatMessage.create({
+        //TODO: find actual way to access the level of the character, rather than using XP as a proxy
+        //TODO: create effect to indicate the trigger is active, spent on next damaging ability to roll extra damage
         content: `<strong>${YELLOWCLOAK_NAME}:</strong> ${yellowCloakActors[0].name} was targeted by an effect dealing lightning damage, and may have their next damaging ability deal ${Math.ceil(yellowCloakActors[0].system.hero.xp / 16)} extra damage as a <i>triggered action</i>. Once that extra damage is dealt, their ${ YELLOWCLOAK_EFFECT_POSITIVE_NAME } becomes ${ YELLOWCLOAK_EFFECT_NEGATIVE_NAME } with the same value until the end of the next round. This triggered action cannot be used again until this weakness ends.`,
       });
     }

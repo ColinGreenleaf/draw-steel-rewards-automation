@@ -1,4 +1,4 @@
-const MODULE_ID = "draw-steel-combat-tracker";
+const MODULE_ID = "draw-steel-rewards-automation";
 const ITEM_NAME = 'Revenger’s Wrap';
 
 const REVENGE_EFFECT_DATA = {
@@ -16,7 +16,7 @@ const REVENGE_EFFECT_DATA = {
   },
   description: "", tint: "#ffffff", transfer: false, statuses: [], sort: 0, flags: {}
 };
-const REVENGE_ORIGIN = 'macro.aid-attack';
+const REVENGE_ORIGIN = 'module.draw-steel-rewards-automation';
 
 //returns actors that have a Revenger's Wrap in their inventory
 export function getWrapActors(game) {

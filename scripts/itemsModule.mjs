@@ -1,10 +1,13 @@
 import {applyMarkWhenWearerDamaged, clearRevengeMarks, clearRevengeOnTurnEnd, applyRevengeStrikeEffects} from "./RevengersWrap.mjs";
 import {dealSharedDamage} from "./BloodboundBand.mjs";
 import {checkColorCloakEffects} from "./ColorCloaks.mjs";
+import {checkForCharge} from "./HellchargerHelm.mjs";
 
 const MODULE_ID = 'draw-steel-rewards-automation'
 const REVENGERS_WRAP_NAME = 'Revenger’s Wrap';
 const BLOODBOUND_BAND_NAME = 'Bloodbound Band';
+const COLOR_CLOAKS_NAMES = ['Color Cloak (Blue)', 'Color Cloak (Red)', 'Color Cloak (Yellow)'];
+const HELLCHARGER_HELM_NAME = 'Hellcharger Helm';
 
 Hooks.on("init", function() {
   console.log("This code runs once the Foundry VTT software begins its initialization workflow.");
@@ -49,6 +52,15 @@ Hooks.once("init", () => {
     default: true,
     onChange: (value) => {toggleColorCloaks(value)}
   });
+  game.settings.register(MODULE_ID, "hellchargerHelm", {
+    name: `${MODULE_ID}.Settings.HellchargerHelm.Name`,
+    hint: `${MODULE_ID}.Settings.HellchargerHelm.Hint`,
+    scope: "world",
+    config: true,
+    type: Boolean,
+    default: true,
+    onChange: (value) => {toggleHellchargerHelm(value)}
+  });
 });
 Hooks.on("ready", () => {
   console.log("Ready Hook: This code runs once the Foundry VTT software is ready and all game data has been loaded.");
@@ -64,6 +76,10 @@ Hooks.on("ready", () => {
   // If the setting is enabled, activate the Color Cloaks functionality
   if (game.settings.get(MODULE_ID, "colorCloaks")) {
     toggleColorCloaks(true);
+  }
+  // If the setting is enabled, activate the Hellcharger Helm functionality
+  if (game.settings.get(MODULE_ID, "hellchargerHelm")) {
+    toggleHellchargerHelm(true);
   }
 
 });
@@ -126,9 +142,9 @@ const toggleBloodboundBand = (enabled) => {
 const toggleColorCloaks = (enabled) => {
   if (enabled) {
     //find relevant actors
-    const blueCloakActors = getActorsWithItem(game, "Color Cloak (Blue)");
-    const redCloakActors = getActorsWithItem(game, "Color Cloak (Red)");
-    const yellowCloakActors = getActorsWithItem(game, "Color Cloak (Yellow)");
+    const blueCloakActors = getActorsWithItem(game, COLOR_CLOAKS_NAMES[0]);
+    const redCloakActors = getActorsWithItem(game, COLOR_CLOAKS_NAMES[1]);
+    const yellowCloakActors = getActorsWithItem(game, COLOR_CLOAKS_NAMES[2]);
 
     /* -------------------------apply color cloak effects when an effect occurs on a target wearing a cloak------------------------- */
     window._colorCloakHook = Hooks.on('createChatMessage', async (message) => {
@@ -139,3 +155,21 @@ const toggleColorCloaks = (enabled) => {
     window._colorCloakHook = null;
   }
 }
+
+  /* -------------------------------------------------- */
+  /*   Hellcharger Helm Hook Controls                   */
+  /* -------------------------------------------------- */
+const toggleHellchargerHelm = (enabled) => {
+  if (enabled) {
+    //find relevant actors
+    const helmActors = getActorsWithItem(game, HELLCHARGER_HELM_NAME);
+
+    window._helmHook = Hooks.on('createChatMessage', async (message) => {
+      checkForCharge(message, game, helmActors);
+    })
+  } else {
+    Hooks.off('createChatMessage', window._helmHook);
+    window._helmHook = null;
+  }
+}
+
