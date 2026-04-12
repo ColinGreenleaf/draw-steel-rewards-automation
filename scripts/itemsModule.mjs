@@ -1,7 +1,7 @@
-import {applyMarkWhenWearerDamaged, clearRevengeMarks, clearRevengeOnTurnEnd, applyRevengeStrikeEffects} from "./RevengersWrap.mjs";
-import {dealSharedDamage} from "./BloodboundBand.mjs";
-import {remindColorCloakEffects} from "./ColorCloaks.mjs";
-import {remindAndApplyHelmEffects} from "./HellchargerHelm.mjs";
+import {applyMarkWhenWearerDamaged, clearRevengeMarks, clearRevengeOnTurnEnd, applyRevengeStrikeEffects} from "./Trinkets/Echelon 1/RevengersWrap.mjs";
+import {dealSharedDamage} from "./Trinkets/Echelon 1/BloodboundBand.mjs";
+import {remindColorCloakEffects} from "./Trinkets/Echelon 1/ColorCloaks.mjs";
+import {remindAndApplyHelmEffects} from "./Trinkets/Echelon 1/HellchargerHelm.mjs";
 
 
 //TODO: add additinal checks so that each hook doesn't run it's code unless the conditions are met.
@@ -67,24 +67,11 @@ Hooks.once("init", () => {
   });
 });
 Hooks.on("ready", () => {
-  console.log("Ready Hook: This code runs once the Foundry VTT software is ready and all game data has been loaded.");
-  // If the setting is enabled, activate the Revenger's Wrap functionality
-  if (game.settings.get(MODULE_ID, "revengersWrap")) {
-    toggleRevengersWrap(true);
-  }
-  // If the setting is enabled, activate the Bloodbound Band functionality
-  if (game.settings.get(MODULE_ID, "bloodboundBand")) {
-    // The Bloodbound Band functionality is handled within its own module, so we don't need to do anything here
-    toggleBloodboundBand(true);
-  }
-  // If the setting is enabled, activate the Color Cloaks functionality
-  if (game.settings.get(MODULE_ID, "colorCloaks")) {
-    toggleColorCloaks(true);
-  }
-  // If the setting is enabled, activate the Hellcharger Helm functionality
-  if (game.settings.get(MODULE_ID, "hellchargerHelm")) {
-    toggleHellchargerHelm(true);
-  }
+  //once the game is ready, check which settings are enabled and activate the corresponding functionality for each item
+  if (game.settings.get(MODULE_ID, "revengersWrap"))    toggleRevengersWrap(true);
+  if (game.settings.get(MODULE_ID, "bloodboundBand"))   toggleBloodboundBand(true);
+  if (game.settings.get(MODULE_ID, "colorCloaks"))      toggleColorCloaks(true);
+  if (game.settings.get(MODULE_ID, "hellchargerHelm"))  toggleHellchargerHelm(true);
 
 });
 

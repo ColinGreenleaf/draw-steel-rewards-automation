@@ -10,8 +10,6 @@ const YELLOWCLOAK_EFFECT_POSITIVE_NAME = 'Lightning Immunity';
 const YELLOWCLOAK_EFFECT_NEGATIVE_NAME = 'Lightning Weakness';
 
 export async function remindColorCloakEffects(message, game, blueCloakActors, redCloakActors, yellowCloakActors) {
-  // if (!message.rolls?.length) return;
-  // if (message.rolls[0].options?.type !== 'test') return;
   const attackingActor = game.actors.get(message.speaker?.actor)
   ?? canvas.tokens.get(message.speaker?.token)?.actor;
   if (!attackingActor) return;
