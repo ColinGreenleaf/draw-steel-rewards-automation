@@ -18,7 +18,7 @@ const CHARGE_EFFECT_DATA = {
 };
 const CHARGE_ORIGIN = 'module.draw-steel-rewards-automation';
 
-export async function checkForCharge(message, game, helmActors) {
+export async function remindHelmEffects(message, game, helmActors) {
 
     const attackingActor = game.actors.get(message.speaker?.actor)
     ?? canvas.tokens.get(message.speaker?.token)?.actor;

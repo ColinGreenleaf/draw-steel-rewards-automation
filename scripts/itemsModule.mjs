@@ -1,7 +1,7 @@
 import {applyMarkWhenWearerDamaged, clearRevengeMarks, clearRevengeOnTurnEnd, applyRevengeStrikeEffects} from "./RevengersWrap.mjs";
 import {dealSharedDamage} from "./BloodboundBand.mjs";
-import {checkColorCloakEffects} from "./ColorCloaks.mjs";
-import {checkForCharge} from "./HellchargerHelm.mjs";
+import {remindColorCloakEffects} from "./ColorCloaks.mjs";
+import {remindHelmEffects} from "./HellchargerHelm.mjs";
 
 const MODULE_ID = 'draw-steel-rewards-automation'
 const REVENGERS_WRAP_NAME = 'Revenger’s Wrap';
@@ -148,7 +148,7 @@ const toggleColorCloaks = (enabled) => {
 
     /* -------------------------apply color cloak effects when an effect occurs on a target wearing a cloak------------------------- */
     window._colorCloakHook = Hooks.on('createChatMessage', async (message) => {
-      checkColorCloakEffects(message, game, blueCloakActors, redCloakActors, yellowCloakActors);
+      remindColorCloakEffects(message, game, blueCloakActors, redCloakActors, yellowCloakActors);
     })
   } else {
     Hooks.off('createChatMessage', window._colorCloakHook);
@@ -164,8 +164,9 @@ const toggleHellchargerHelm = (enabled) => {
     //find relevant actors
     const helmActors = getActorsWithItem(game, HELLCHARGER_HELM_NAME);
 
+
     window._helmHook = Hooks.on('createChatMessage', async (message) => {
-      checkForCharge(message, game, helmActors);
+      remindHelmEffects(message, game, helmActors);
     })
   } else {
     Hooks.off('createChatMessage', window._helmHook);
